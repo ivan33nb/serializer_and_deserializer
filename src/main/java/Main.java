@@ -1,17 +1,22 @@
+import java.io.*;
+import java.util.Arrays;
+
 public class Main {
-    public static void main(String[] args) {
-        Person person1 = new Person(1, "Ivan", 27);
-        Person person2 = new Person(2, "Tom", 42);
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        Person [] people = {new Person(1, "Ivan", 27), new Person(2, "Tom", 42)};
 
-        WriteObject<Person> writeObject = new WriteObject<>();
-        writeObject.writeObject(person1);
-        writeObject.writeObject(person2);
+        FileOutputStream fos = new FileOutputStream("human.bin");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeInt(people.length);
+        oos.writeObject(people);
+        fos.close();
 
-        ReadObject<Person> readObject = new ReadObject<>();
+        FileInputStream fis = new FileInputStream("human.bin");
+        ObjectInputStream ois = new ObjectInputStream(fis);
 
-        Person person = readObject.readObject();
-        Person person3 = readObject.readObject();
-        System.out.println(person.toString());
-        System.out.println(person3.toString());
+        Person [] peopleFromFile = new Person[ois.readInt()];
+        peopleFromFile = (Person[]) ois.readObject();
+
+        System.out.println(Arrays.toString(peopleFromFile));
     }
 }
